@@ -1,0 +1,99 @@
+// This is your Prisma schema file for PostgreSQL (Neon)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  password        String?
+  googleId        String?   @unique
+  role            Role      @default(USER)
+  isVerified      Boolean   @default(false)
+  resetToken      String?
+  resetTokenExpiry DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  resumes         Resume[]
+  payments        Payment[]
+
+  @@index([email])
+}
+
+model Resume {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  personalInfo     Json?
+  careerObjective  String?  @db.Text
+  education        Json?
+  experience       Json?
+  projects         Json?
+  skills           Json?
+  certifications   Json?
+  achievements     Json?
+  languages        Json?
+  
+  selectedTemplate String   @default("modern")
+  atsScore         Int?
+  atsKeywords      Json?
+  atsSuggestions   Json?
+  
+  jobDescription   String?  @db.Text
+  matchScore       Int?
+  
+  isPaid           Boolean  @default(false)
+  paymentId        String?
+  
+  enhancedContent  Json?
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  payment          Payment?
+
+  @@index([userId])
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  userId                String
+  user                  User          @relation(fields: [userId], references: [id])
+  resumeId              String        @unique
+  resume                Resume        @relation(fields: [resumeId], references: [id])
+  
+  razorpayOrderId       String        @unique
+  razorpayPaymentId     String?       @unique
+  razorpaySignature     String?
+  
+  amount                Int           // in paise (₹49 = 4900)
+  currency              String        @default("INR")
+  status                PaymentStatus @default(PENDING)
+  
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
