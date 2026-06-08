@@ -10,7 +10,6 @@
     "dev": "concurrently \"npm run dev --workspace=frontend\" \"npm run dev --workspace=backend\"",
     "build": "npm run build --workspace=frontend && npm run build --workspace=backend",
     "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
-    "postinstall": "prisma generate",
     "start": "node src/index.js"
   },
   "devDependencies": {
