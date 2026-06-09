@@ -33,6 +33,9 @@ export default function Navbar() {
     { to: '/tools', icon: Wrench, label: 'AI Tools' },
   ] : []
 
+
+  console.log("CLIENT ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID)
+
   return (
     <motion.nav
       initial={{ y: -100 }}
