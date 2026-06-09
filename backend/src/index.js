@@ -131,6 +131,8 @@ app.listen(PORT, () => {
   console.log(`   Health: http://localhost:${PORT}/api/health\n`)
 })
 
+console.log("CLIENT ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID)
+
 process.on('SIGTERM', async () => {
   await prisma.$disconnect()
   process.exit(0)
