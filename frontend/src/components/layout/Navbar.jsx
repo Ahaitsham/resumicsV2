@@ -6,12 +6,13 @@ import {
   Menu, X, ChevronDown, Shield, User, Home, Sparkles
 } from 'lucide-react'
 import { useAuthStore } from '../../store'
+import logo from "./logo.png"
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuthStore()
   const navigate = useNavigate()
   const location = useLocation()
-  const [scrolled, setScrolled]     = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
 
@@ -38,11 +39,11 @@ export default function Navbar() {
 
   const navLinks = isAuthenticated ? [
     { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/builder',   icon: FileText,        label: 'Build Resume' },
-    { to: '/tools',     icon: Wrench,          label: 'AI Tools' },
+    { to: '/builder', icon: FileText, label: 'Build Resume' },
+    { to: '/tools', icon: Wrench, label: 'AI Tools' },
   ] : [
-    { to: '/',         icon: Home,     label: 'Home' },
-    { to: '/login',    icon: User,     label: 'Login' },
+    { to: '/', icon: Home, label: 'Home' },
+    { to: '/login', icon: User, label: 'Login' },
     { to: '/register', icon: Sparkles, label: 'Get Started' },
   ]
 
@@ -51,19 +52,22 @@ export default function Navbar() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'glass border-b border-white/5 shadow-xl shadow-black/20' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'glass border-b border-white/5 shadow-xl shadow-black/20' : 'bg-transparent'
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center group-hover:neon-glow transition-all">
-              <span className="font-display font-bold text-white text-sm">R</span>
-            </div>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <img
+              src={logo}
+              alt="Resumics Logo"
+              className="h-10 w-auto object-contain group-hover:scale-105 transition-transform"
+            />
+
             <span className="font-display font-bold text-white text-lg hidden sm:block">
-              Resumics<span className="gradient-text">.online</span>
+              Resumics<span>.</span>
+              <span className="gradient-text">online</span>
             </span>
           </Link>
 
@@ -72,11 +76,10 @@ export default function Navbar() {
             {isAuthenticated && navLinks.map(({ to, icon: Icon, label }) => (
               <Link
                 key={to} to={to}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  location.pathname === to
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${location.pathname === to
                     ? 'bg-brand-500/20 text-brand-300'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
                 <Icon size={15} /> {label}
               </Link>
@@ -221,11 +224,10 @@ export default function Navbar() {
                   <Link
                     key={to} to={to}
                     onClick={() => setMobileOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                      location.pathname === to
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${location.pathname === to
                         ? 'bg-brand-500/20 text-brand-300 border border-brand-500/20'
                         : 'text-slate-300 hover:text-white hover:bg-white/5'
-                    }`}
+                      }`}
                   >
                     <Icon size={17} /> {label}
                   </Link>
