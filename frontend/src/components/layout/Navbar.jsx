@@ -34,7 +34,7 @@ export default function Navbar() {
   ] : []
 
 
-  console.log("CLIENT ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID)
+
 
   return (
     <motion.nav

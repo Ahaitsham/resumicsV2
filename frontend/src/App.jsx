@@ -7,14 +7,14 @@ import UrgencyPopup from './components/ui/UrgencyPopup'
 import ExitIntentPopup from './components/ui/ExitIntentPopup'
 import LoadingScreen from './components/ui/LoadingScreen'
 
-const LandingPage       = lazy(() => import('./pages/LandingPage'))
-const LoginPage         = lazy(() => import('./pages/LoginPage'))
-const RegisterPage      = lazy(() => import('./pages/RegisterPage'))
-const DashboardPage     = lazy(() => import('./pages/DashboardPage'))
-const BuilderPage       = lazy(() => import('./pages/BuilderPage'))
-const PreviewPage       = lazy(() => import('./pages/PreviewPage'))
-const ToolsPage         = lazy(() => import('./pages/ToolsPage'))
-const AdminPage         = lazy(() => import('./pages/AdminPage'))
+const LandingPage = lazy(() => import('./pages/LandingPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const BuilderPage = lazy(() => import('./pages/BuilderPage'))
+const PreviewPage = lazy(() => import('./pages/PreviewPage'))
+const ToolsPage = lazy(() => import('./pages/ToolsPage'))
+const AdminPage = lazy(() => import('./pages/AdminPage'))
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
 
 function ProtectedRoute({ children, adminOnly = false }) {
@@ -54,6 +54,9 @@ export default function App() {
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
+  console.log("Google Client ID:", googleClientId);
+  console.log("Origin:", window.location.origin);
+
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <BrowserRouter>
@@ -68,7 +71,7 @@ export default function App() {
               borderRadius: '12px',
             },
             success: { iconTheme: { primary: '#22C55E', secondary: '#fff' } },
-            error:   { iconTheme: { primary: '#EF4444', secondary: '#fff' } },
+            error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } },
           }}
         />
 
@@ -77,20 +80,20 @@ export default function App() {
 
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
-            <Route path="/"               element={<LandingPage />} />
-            <Route path="/login"          element={<PublicRoute><LoginPage /></PublicRoute>} />
-            <Route path="/register"       element={<PublicRoute><RegisterPage /></PublicRoute>} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+            <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-            <Route path="/dashboard"      element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-            <Route path="/builder"        element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
-            <Route path="/builder/:id"    element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
-            <Route path="/preview/:id"    element={<ProtectedRoute><PreviewPage /></ProtectedRoute>} />
-            <Route path="/tools"          element={<ProtectedRoute><ToolsPage /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/builder" element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
+            <Route path="/builder/:id" element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
+            <Route path="/preview/:id" element={<ProtectedRoute><PreviewPage /></ProtectedRoute>} />
+            <Route path="/tools" element={<ProtectedRoute><ToolsPage /></ProtectedRoute>} />
 
-            <Route path="/admin"          element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>} />
 
-            <Route path="*"              element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
