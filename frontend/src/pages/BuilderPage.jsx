@@ -39,11 +39,15 @@ export default function BuilderPage() {
   const [resumeId, setResumeId] = useState(id || null)
   const [showATS, setShowATS] = useState(false)
 
+  // Sync resumeId when URL param changes (prevents duplicate creation)
   useEffect(() => {
-    if (id) loadResume(id)
+    if (id && id !== resumeId) {
+      setResumeId(id)
+      loadResume(id)
+    }
   }, [id])
 
-  // Auto-calculate ATS on data change
+  // Initial ATS calculation on mount only
   useEffect(() => {
     const data = getResumeData()
     if (data.personalInfo?.fullName) {
