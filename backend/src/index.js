@@ -25,6 +25,8 @@ if (MISSING.length > 0) {
 
 const app = express()
 
+app.set('trust proxy', 1)
+
 export const prisma = new PrismaClient({
   log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
 })

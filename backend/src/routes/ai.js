@@ -16,7 +16,7 @@ function getAI() {
   return _anthropic
 }
 
-const MODEL = 'claude-sonnet-4-20250514'
+const MODEL = 'claude-sonnet-4-6'
 
 // Robust JSON parser — handles markdown fences and trailing text
 function parseJSON(raw) {
