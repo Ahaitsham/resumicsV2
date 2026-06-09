@@ -43,7 +43,11 @@ export default function RegisterPage() {
       toast.success("Account created! Let's build your resume 🚀")
       navigate('/builder')
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Registration failed. Please try again.')
+      const msg = err.response?.data?.error
+        || err.message
+        || 'Registration failed. Please try again.'
+      toast.error(msg)
+      console.error('Register error:', err)
     } finally {
       setLoading(false)
     }
@@ -51,6 +55,8 @@ export default function RegisterPage() {
 
   // Google OAuth
   const googleLogin = useGoogleLogin({
+    // Force account picker — prevents stale cached account
+    prompt: 'select_account',
     onSuccess: async (tokenResponse) => {
       setGoogleLoading(true)
       try {

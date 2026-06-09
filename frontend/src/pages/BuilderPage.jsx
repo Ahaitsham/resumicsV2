@@ -180,51 +180,58 @@ export default function BuilderPage() {
     <div className="min-h-screen bg-slate-950">
       <Navbar />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-16">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-20 pb-16 overflow-x-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between py-6 border-b border-white/5 mb-6">
-          <div>
-            <h1 className="font-display text-xl font-bold text-white">Resume Builder</h1>
-            <p className="text-slate-500 text-xs mt-0.5">Step {currentStep + 1} of {STEPS.length}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* ATS Score badge */}
+        <div className="py-4 border-b border-white/5 mb-6">
+          {/* Top row: title + step */}
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h1 className="font-display text-lg sm:text-xl font-bold text-white">Resume Builder</h1>
+              <p className="text-slate-500 text-xs mt-0.5">Step {currentStep + 1} of {STEPS.length}</p>
+            </div>
+            {/* ATS Score badge — always visible */}
             {atsScore !== null && (
-              <button
-                onClick={() => setShowATS(!showATS)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-medium transition-all ${
-                  atsScore >= 80 ? 'border-green-500/30 bg-green-500/10 text-green-400' :
-                  atsScore >= 60 ? 'border-amber-500/30 bg-amber-500/10 text-amber-400' :
-                  'border-red-500/30 bg-red-500/10 text-red-400'
-                }`}
-              >
-                <Target size={12} />
-                ATS {atsScore}/100
-              </button>
+              <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-medium ${
+                atsScore >= 80 ? 'border-green-500/30 bg-green-500/10 text-green-400' :
+                atsScore >= 60 ? 'border-amber-500/30 bg-amber-500/10 text-amber-400' :
+                'border-red-500/30 bg-red-500/10 text-red-400'
+              }`}>
+                <Target size={11} />
+                <span>{atsScore}/100</span>
+              </div>
             )}
-
+          </div>
+          {/* Bottom row: action buttons — wraps on mobile */}
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={handleGenerateWithAI}
               disabled={isGenerating}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-medium hover:bg-purple-500/30 transition-all disabled:opacity-60"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-medium hover:bg-purple-500/30 transition-all disabled:opacity-60"
             >
               {isGenerating ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-              AI Enhance
+              <span>AI Enhance</span>
             </button>
 
-            <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-3 py-2 rounded-xl glass-light text-slate-300 text-xs hover:bg-white/10 transition-all disabled:opacity-60">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-light text-slate-300 text-xs hover:bg-white/10 transition-all disabled:opacity-60"
+            >
               {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
-              Save
+              <span>Save</span>
             </button>
 
-            <button onClick={handlePreview} className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
+            <button
+              onClick={handlePreview}
+              className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5 ml-auto"
+            >
               <Eye size={12} />
               Preview
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
           {/* Sidebar steps */}
           <div className="lg:col-span-1">
             <div className="glass rounded-2xl border border-white/10 p-3 sticky top-24">

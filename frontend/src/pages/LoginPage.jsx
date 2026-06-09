@@ -38,7 +38,11 @@ export default function LoginPage() {
       toast.success('Welcome back!')
       navigate('/dashboard')
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Login failed. Please try again.')
+      const msg = err.response?.data?.error
+        || err.message
+        || 'Login failed. Please try again.'
+      toast.error(msg)
+      console.error('Login error:', err)
     } finally {
       setLoading(false)
     }
@@ -46,6 +50,8 @@ export default function LoginPage() {
 
   // Google OAuth — uses access_token flow to get user info, then sends to backend
   const googleLogin = useGoogleLogin({
+    // Force account picker — prevents stale cached account
+    prompt: 'select_account',
     onSuccess: async (tokenResponse) => {
       setGoogleLoading(true)
       try {
@@ -58,6 +64,10 @@ export default function LoginPage() {
         // Send id_token or profile data to our backend
         // We use the sub (Google user ID) + email + name
         const res = await authAPI.googleLogin(tokenResponse.access_token)
+        // Clear any previous user's resume data before setting new user
+        const { useResumeStore } = await import('../store')
+        useResumeStore.getState().resetResume()
+        try { localStorage.removeItem('resume-store') } catch {}
         setUser(res.data.user, res.data.token)
         toast.success('Signed in with Google!')
         navigate('/dashboard')
@@ -93,7 +103,7 @@ export default function LoginPage() {
               <span className="font-display font-bold text-white text-lg">R</span>
             </div>
             <h1 className="font-display text-2xl font-bold text-white mb-1">Welcome back</h1>
-            <p className="text-slate-400 text-sm">Sign in to your Resumics account</p>
+            <p className="text-slate-400 text-sm">Sign in to your ResumeAI Pro account</p>
           </div>
 
           {/* ── Google Login Button ── */}

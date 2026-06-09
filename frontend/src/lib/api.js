@@ -3,7 +3,7 @@ import { useAuthStore } from '../store'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
-  timeout: 30000,
+  timeout: 45000, // 45s for slow mobile networks
   headers: {
     'Content-Type': 'application/json',
   },
@@ -18,13 +18,21 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Response interceptor — handle auth errors
+// Response interceptor — handle auth errors and network errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       useAuthStore.getState().logout()
       window.location.href = '/login'
+    }
+    // Improve network error messages for mobile
+    if (!error.response) {
+      if (error.code === 'ECONNABORTED') {
+        error.message = 'Request timed out. Check your internet connection and try again.'
+      } else if (error.message === 'Network Error') {
+        error.message = 'Cannot connect to server. Check your internet connection.'
+      }
     }
     return Promise.reject(error)
   }
