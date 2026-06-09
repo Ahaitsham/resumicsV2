@@ -54,8 +54,7 @@ export default function App() {
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
-  console.log("Google Client ID:", googleClientId);
-  console.log("Origin:", window.location.origin);
+ 
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
