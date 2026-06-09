@@ -195,9 +195,9 @@ export default function Navbar() {
               {/* Drawer header */}
               <div className="flex items-center justify-between px-5 h-16 border-b border-white/10 flex-shrink-0">
                 <div className="flex items-center gap-2">
-                  <img src="/favicon.ico" alt="ResumeAI Pro" className="w-7 h-7 rounded-lg object-cover"
+                  <img src="/favicon.ico" alt="Resumics" className="w-7 h-7 rounded-lg object-cover"
                     onError={(e) => { e.target.style.display='none' }} />
-                  <span className="font-display font-bold text-white text-sm">ResumeAI Pro</span>
+                  <span className="font-display font-bold text-white text-sm">Resumics</span>
                 </div>
                 <button onClick={() => setMobileOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
                   <X size={18} />

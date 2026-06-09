@@ -7,7 +7,7 @@
 ## 📁 Project Structure
 
 ```
-resumeai-pro/
+resumics/
 ├── frontend/                   # React + Vite + TailwindCSS
 │   ├── src/
 │   │   ├── components/
@@ -47,8 +47,8 @@ resumeai-pro/
 ### Step 1 — Clone & Install
 
 ```bash
-git clone https://github.com/yourusername/resumeai-pro.git
-cd resumeai-pro
+git clone https://github.com/yourusername/resumics.git
+cd resumics
 
 # Install root deps
 npm install
@@ -412,7 +412,7 @@ Before switching to live payments:
 ## 📞 Support
 
 - Email: support@resumeaipro.in
-- GitHub Issues: github.com/yourusername/resumeai-pro/issues
+- GitHub Issues: github.com/yourusername/resumics/issues
 
 ---
 

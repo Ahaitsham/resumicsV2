@@ -103,7 +103,7 @@ export default function LoginPage() {
               <span className="font-display font-bold text-white text-lg">R</span>
             </div>
             <h1 className="font-display text-2xl font-bold text-white mb-1">Welcome back</h1>
-            <p className="text-slate-400 text-sm">Sign in to your ResumeAI Pro account</p>
+            <p className="text-slate-400 text-sm">Sign in to your Resumics account</p>
           </div>
 
           {/* ── Google Login Button ── */}
