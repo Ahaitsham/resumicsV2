@@ -126,7 +126,7 @@ app.use((err, req, res, next) => {
 // ── Start ─────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-  console.log(`\n🚀 ResumeAI Pro backend on http://localhost:${PORT}`)
+  console.log(`\n🚀 Resumics backend on http://localhost:${PORT}`)
   console.log(`   Mode: ${process.env.NODE_ENV || 'development'}`)
   console.log(`   Health: http://localhost:${PORT}/api/health\n`)
 })

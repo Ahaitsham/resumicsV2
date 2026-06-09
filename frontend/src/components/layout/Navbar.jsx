@@ -63,7 +63,7 @@ export default function Navbar() {
               <span className="font-display font-bold text-white text-sm">R</span>
             </div>
             <span className="font-display font-bold text-white text-lg hidden sm:block">
-              Resume<span className="gradient-text">AI</span> Pro
+              Resumics<span className="gradient-text">.online</span>
             </span>
           </Link>
 
@@ -193,7 +193,7 @@ export default function Navbar() {
                   <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center">
                     <span className="font-display font-bold text-white text-xs">R</span>
                   </div>
-                  <span className="font-display font-bold text-white text-sm">ResumeAI Pro</span>
+                  <span className="font-display font-bold text-white text-sm">Resumics</span>
                 </div>
                 <button onClick={() => setMobileOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
                   <X size={18} />
