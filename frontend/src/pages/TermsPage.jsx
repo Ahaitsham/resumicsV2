@@ -28,7 +28,7 @@ We reserve the right to suspend or terminate accounts that violate these terms.`
 
 Refund policy: If your PDF download fails due to a technical error on our side, we will issue a full refund within 5–7 business days. Refunds are not provided for change of mind or dissatisfaction with AI-generated content, as the preview is always available before payment.
 
-For refund requests, email support@resumeaipro.in within 48 hours of purchase.`,
+For refund requests, email resumics@gmail.com within 48 hours of purchase.`,
   },
   {
     title: '5. Intellectual Property',
@@ -99,7 +99,7 @@ export default function TermsPage() {
           ))}
           <div className="glass rounded-2xl border border-white/10 p-6">
             <h2 className="font-display text-white font-semibold mb-2">Contact Us</h2>
-            <p className="text-slate-400 text-sm">Questions about these terms? Email <a href="mailto:support@resumeaipro.in" className="text-brand-400 hover:text-brand-300">support@resumeaipro.in</a></p>
+            <p className="text-slate-400 text-sm">Questions about these terms? Email <a href="mailto:resumics@gmail.com" className="text-brand-400 hover:text-brand-300">resumics@gmail.com</a></p>
           </div>
         </div>
       </section>

@@ -35,7 +35,7 @@ export function ModernTemplate({ data, watermark = false }) {
       {experience.length > 0 && (
         <Section title="WORK EXPERIENCE">
           {experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: '12px' }}>
+            <div key={i} style={{ marginBottom: '12px', pageBreakInside: 'avoid' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
                   <div style={{ fontWeight: '700', fontSize: '12px', color: '#1E1B4B' }}>{exp.role}</div>
@@ -82,7 +82,7 @@ export function ModernTemplate({ data, watermark = false }) {
       {projects.length > 0 && (
         <Section title="PROJECTS">
           {projects.map((proj, i) => (
-            <div key={i} style={{ marginBottom: '10px' }}>
+            <div key={i} style={{ marginBottom: '10px', pageBreakInside: 'avoid' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ fontWeight: '700', color: '#1E1B4B' }}>{proj.name}</div>
                 <div style={{ color: '#6B7280', fontSize: '10px' }}>
@@ -178,7 +178,7 @@ export function ModernTemplate({ data, watermark = false }) {
 
 function Section({ title, children }) {
   return (
-    <div style={{ marginBottom: '14px' }}>
+    <div style={{ marginBottom: '14px', pageBreakInside: 'avoid' }}>
       <h2 style={{
         fontSize: '11px',
         fontWeight: '700',

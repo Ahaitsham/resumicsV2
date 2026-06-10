@@ -52,7 +52,7 @@ export default function Footer() {
                 className="p-2 glass rounded-lg text-slate-400 hover:text-white hover:border-pink-500/30 transition-all">
                 <Instagram size={14} />
               </a>
-              <a href="mailto:support@resumeaipro.in"
+              <a href="mailto:resumics@gmail.com"
                 className="p-2 glass rounded-lg text-slate-400 hover:text-white hover:border-brand-500/30 transition-all">
                 <Mail size={14} />
               </a>
@@ -82,7 +82,7 @@ export default function Footer() {
                   {label}
                 </Link>
               ))}
-              <a href="mailto:support@resumeaipro.in"
+              <a href="mailto:resumics@gmail.com"
                 className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">
                 Support
               </a>
@@ -114,8 +114,8 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-1 text-slate-600 text-xs">
             <Mail size={10} />
-            <a href="mailto:support@resumeaipro.in" className="hover:text-slate-400 transition-colors">
-              support@resumeaipro.in
+            <a href="mailto:resumics@gmail.com" className="hover:text-slate-400 transition-colors">
+              resumics@gmail.com
             </a>
           </div>
         </div>

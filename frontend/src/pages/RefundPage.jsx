@@ -74,7 +74,7 @@ export default function RefundPage() {
             <h2 className="font-display text-white font-semibold mb-4">How to Request a Refund</h2>
             <div className="space-y-4">
               {[
-                { step: '01', title: 'Email us within 48 hours', desc: 'Send an email to support@resumeaipro.in with subject "Refund Request"' },
+                { step: '01', title: 'Email us within 48 hours', desc: 'Send an email to resumics@gmail.com with subject "Refund Request"' },
                 { step: '02', title: 'Include your details', desc: 'Your registered email address, payment ID from Razorpay, and a brief description of the issue' },
                 { step: '03', title: 'We review within 24 hours', desc: 'Our team reviews every request personally and responds within 1 business day' },
                 { step: '04', title: 'Refund processed in 5–7 days', desc: 'Approved refunds are returned to your original payment method within 5–7 business days' },
@@ -98,9 +98,9 @@ export default function RefundPage() {
             <Mail size={24} className="text-brand-400 mx-auto mb-3" />
             <h2 className="font-display text-white font-semibold mb-2">Questions about a refund?</h2>
             <p className="text-slate-400 text-sm mb-4">We're a small team and we care about every customer. Reach out and we'll make it right.</p>
-            <a href="mailto:support@resumeaipro.in"
+            <a href="mailto:resumics@gmail.com"
               className="btn-primary inline-flex items-center gap-2 text-sm py-2.5 px-6">
-              <Mail size={14} /> support@resumeaipro.in
+              <Mail size={14} /> resumics@gmail.com
             </a>
           </motion.div>
 

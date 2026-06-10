@@ -14,7 +14,7 @@ export default function ContactPage() {
     setSending(true)
     // Simple mailto fallback — replace with your email API if needed
     await new Promise(r => setTimeout(r, 1000))
-    const mailto = `mailto:support@resumeaipro.in?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`
+    const mailto = `mailto:resumics@gmail.com?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`
     window.location.href = mailto
     setSending(false)
     setSent(true)
@@ -43,7 +43,7 @@ export default function ContactPage() {
           {/* Contact info */}
           <div className="space-y-4">
             {[
-              { icon: Mail, title: 'Email Us', value: 'support@resumeaipro.in', href: 'mailto:support@resumeaipro.in', desc: 'For support & refunds' },
+              { icon: Mail, title: 'Email Us', value: 'resumics@gmail.com', href: 'mailto:resumics@gmail.com', desc: 'For support & refunds' },
               { icon: Clock, title: 'Response Time', value: 'Within 24 hours', href: null, desc: 'Mon–Sat, 9am–6pm IST' },
             ].map(({ icon: Icon, title, value, href, desc }) => (
               <motion.div key={title}

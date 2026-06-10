@@ -411,7 +411,7 @@ Before switching to live payments:
 
 ## 📞 Support
 
-- Email: support@resumeaipro.in
+- Email: resumics@gmail.com
 - GitHub Issues: github.com/yourusername/resumics/issues
 
 ---

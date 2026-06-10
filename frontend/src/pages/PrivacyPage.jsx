@@ -45,7 +45,7 @@ Each provider has their own privacy policy which we encourage you to review.`,
   },
   {
     title: '5. Data Retention',
-    content: `We retain your account and resume data as long as your account is active. You can delete individual resumes from your dashboard at any time. To delete your entire account and all associated data, contact us at support@resumeaipro.in and we will process the request within 7 business days.`,
+    content: `We retain your account and resume data as long as your account is active. You can delete individual resumes from your dashboard at any time. To delete your entire account and all associated data, contact us at resumics@gmail.com and we will process the request within 7 business days.`,
   },
   {
     title: '6. Cookies',
@@ -59,7 +59,7 @@ Each provider has their own privacy policy which we encourage you to review.`,
 • Request deletion of your data
 • Export your resume data
 
-To exercise any of these rights, email support@resumeaipro.in`,
+To exercise any of these rights, email resumics@gmail.com`,
   },
   {
     title: '8. Changes to This Policy',
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
           ))}
           <div className="glass rounded-2xl border border-white/10 p-6">
             <h2 className="font-display text-white font-semibold mb-2">Contact</h2>
-            <p className="text-slate-400 text-sm">For any privacy-related questions, email us at <a href="mailto:support@resumeaipro.in" className="text-brand-400 hover:text-brand-300">support@resumeaipro.in</a></p>
+            <p className="text-slate-400 text-sm">For any privacy-related questions, email us at <a href="mailto:resumics@gmail.com" className="text-brand-400 hover:text-brand-300">resumics@gmail.com</a></p>
           </div>
         </div>
       </section>
