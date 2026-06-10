@@ -188,9 +188,16 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Link to={`/builder/${resume.id}`} className="flex-1 flex items-center justify-center gap-1.5 text-xs py-2 rounded-lg bg-brand-500/20 text-brand-300 hover:bg-brand-500/30 transition-colors">
+                  <button
+                    onClick={() => {
+                      // Clear store so stale data from previous resume doesn't flash
+                      resetResume()
+                      navigate(`/builder/${resume.id}`)
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 text-xs py-2 rounded-lg bg-brand-500/20 text-brand-300 hover:bg-brand-500/30 transition-colors"
+                  >
                     <Edit size={12} /> Edit
-                  </Link>
+                  </button>
                   <Link to={`/preview/${resume.id}`} className="flex-1 flex items-center justify-center gap-1.5 text-xs py-2 rounded-lg glass-light text-slate-300 hover:bg-white/10 transition-colors">
                     <Eye size={12} /> Preview
                   </Link>

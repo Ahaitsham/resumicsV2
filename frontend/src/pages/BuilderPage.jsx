@@ -38,41 +38,55 @@ export default function BuilderPage() {
   const [saving, setSaving] = useState(false)
   const [resumeId, setResumeId] = useState(id || null)
   const [showATS, setShowATS] = useState(false)
+  const [loadingResume, setLoadingResume] = useState(!!id) // show loader while fetching
 
-  // Sync resumeId when URL param changes (prevents duplicate creation)
+  // Always load from DB when id is present in URL
+  // This runs on mount AND when id param changes
   useEffect(() => {
-    if (id && id !== resumeId) {
+    if (id) {
       setResumeId(id)
       loadResume(id)
+    } else {
+      // No id = new resume, don't touch the store (resetResume called by dashboard)
+      setLoadingResume(false)
     }
-  }, [id])
+  }, [id]) // re-run if id changes
 
-  // Initial ATS calculation on mount only
+  // ATS calculation after data is loaded
   useEffect(() => {
-    const data = getResumeData()
-    if (data.personalInfo?.fullName) {
-      const result = calculateQuickATSScore(data)
-      setAtsData(result.score, result.keywords, result.suggestions)
+    if (!loadingResume) {
+      const data = getResumeData()
+      if (data.personalInfo?.fullName) {
+        const result = calculateQuickATSScore(data)
+        setAtsData(result.score, result.keywords, result.suggestions)
+      }
     }
-  }, [])
+  }, [loadingResume])
 
-  const loadResume = async (id) => {
+  const loadResume = async (resumeIdToLoad) => {
+    setLoadingResume(true)
     try {
-      const res = await resumeAPI.get(id)
+      const res = await resumeAPI.get(resumeIdToLoad)
       const { resume } = res.data
       const store = useResumeStore.getState()
-      if (resume.personalInfo) store.setPersonalInfo(resume.personalInfo)
-      if (resume.careerObjective) store.setCareerObjective(resume.careerObjective)
-      if (resume.education) store.setEducation(resume.education)
-      if (resume.experience) store.setExperience(resume.experience)
-      if (resume.projects) store.setProjects(resume.projects)
-      if (resume.skills) store.setSkills(resume.skills)
-      if (resume.certifications) store.setCertifications(resume.certifications)
-      if (resume.achievements) store.setAchievements(resume.achievements)
-      if (resume.languages) store.setLanguages(resume.languages)
-      if (resume.selectedTemplate) store.setSelectedTemplate(resume.selectedTemplate)
-    } catch {
-      toast.error('Could not load resume')
+
+      // Populate store with ALL fields from DB — use empty fallbacks not conditionals
+      // so editing a resume with empty fields still clears stale store data
+      store.setPersonalInfo(resume.personalInfo || { fullName: '', email: '', phone: '', location: '', linkedin: '', github: '', portfolio: '' })
+      store.setCareerObjective(resume.careerObjective || '')
+      store.setEducation(resume.education || [])
+      store.setExperience(resume.experience || [])
+      store.setProjects(resume.projects || [])
+      store.setSkills(resume.skills || { technical: [], soft: [], tools: [] })
+      store.setCertifications(resume.certifications || [])
+      store.setAchievements(resume.achievements || [])
+      store.setLanguages(resume.languages || [])
+      store.setSelectedTemplate(resume.selectedTemplate || 'modern')
+    } catch (err) {
+      console.error('Load resume error:', err)
+      toast.error('Could not load resume data. Please try again.')
+    } finally {
+      setLoadingResume(false)
     }
   }
 
@@ -174,6 +188,22 @@ export default function BuilderPage() {
       case 'template': return <StepTemplate />
       default: return null
     }
+  }
+
+  // Show full-screen loader while fetching resume data
+  if (loadingResume) {
+    return (
+      <div className="min-h-screen bg-slate-950">
+        <Navbar />
+        <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+          <div className="text-center">
+            <Loader2 size={36} className="animate-spin text-brand-400 mx-auto mb-4" />
+            <p className="text-slate-400 text-sm">Loading your resume...</p>
+            <p className="text-slate-600 text-xs mt-1">Fetching data from database</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
