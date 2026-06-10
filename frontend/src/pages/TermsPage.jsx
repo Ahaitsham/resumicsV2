@@ -99,7 +99,7 @@ export default function TermsPage() {
           ))}
           <div className="glass rounded-2xl border border-white/10 p-6">
             <h2 className="font-display text-white font-semibold mb-2">Contact Us</h2>
-            <p className="text-slate-400 text-sm">Questions about these terms? Email <a href="mailto:resumics@gmail.com" className="text-brand-400 hover:text-brand-300">resumics@gmail.com</a></p>
+            <p className="text-slate-400 text-sm">Questions about these terms? Email <a href="mailto:resumics@gmail.com" className="text-brand-400 hover:text-brand-300">resumics@gmail.com </a></p>
           </div>
         </div>
       </section>
