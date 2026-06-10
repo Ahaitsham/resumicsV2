@@ -1,29 +1,61 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Github, Twitter, Linkedin, Mail, Heart } from 'lucide-react'
+import { Linkedin, Instagram, Mail, Heart } from 'lucide-react'
+
+const PRODUCT_LINKS = [
+  { to: '/builder',    label: 'Resume Builder' },
+  { to: '/ats-guide',  label: 'ATS Checker Guide' },
+  { to: '/tools',      label: 'Cover Letter AI' },
+  { to: '/tools',      label: 'Interview Prep' },
+]
+
+const RESOURCE_LINKS = [
+  { to: '/ats-guide',  label: 'ATS Guide' },
+  { to: '/about',      label: 'About Us' },
+  { to: '/contact',    label: 'Contact' },
+]
+
+const LEGAL_LINKS = [
+  { to: '/about',      label: 'About Us' },
+  { to: '/privacy',    label: 'Privacy Policy' },
+  { to: '/terms',      label: 'Terms of Service' },
+  { to: '/refund',     label: 'Refund Policy' },
+  { to: '/contact',    label: 'Contact Us' },
+]
 
 export default function Footer() {
   return (
     <footer className="border-t border-white/5 bg-slate-950/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center">
+              <img src="/favicon.ico" alt="ResumeAI Pro"
+                className="w-7 h-7 rounded-lg object-cover"
+                onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
+              <div className="w-7 h-7 rounded-lg bg-brand-600 items-center justify-content-center hidden">
                 <span className="font-display font-bold text-white text-xs">R</span>
               </div>
-              <span className="font-display font-bold text-white">Resumics</span>
+              <span className="font-display font-bold text-white">ResumeAI Pro</span>
             </div>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              India's #1 AI-powered resume builder. Beat ATS, get shortlisted.
+            <p className="text-slate-500 text-sm leading-relaxed mb-4">
+              India's AI-powered resume builder. Beat ATS, get shortlisted, land your dream job.
             </p>
-            <div className="flex gap-3 mt-4">
-              {[Github, Twitter, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="p-2 glass rounded-lg text-slate-400 hover:text-white hover:border-brand-500/30 transition-all">
-                  <Icon size={14} />
-                </a>
-              ))}
+            <div className="flex gap-3">
+              <a href="https://www.linkedin.com/in/ahaitsham" target="_blank" rel="noopener noreferrer"
+                className="p-2 glass rounded-lg text-slate-400 hover:text-white hover:border-brand-500/30 transition-all">
+                <Linkedin size={14} />
+              </a>
+              <a href="https://www.instagram.com/resumics" target="_blank" rel="noopener noreferrer"
+                className="p-2 glass rounded-lg text-slate-400 hover:text-white hover:border-pink-500/30 transition-all">
+                <Instagram size={14} />
+              </a>
+              <a href="mailto:support@resumeaipro.in"
+                className="p-2 glass rounded-lg text-slate-400 hover:text-white hover:border-brand-500/30 transition-all">
+                <Mail size={14} />
+              </a>
             </div>
           </div>
 
@@ -31,8 +63,11 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Product</h4>
             <div className="space-y-2.5">
-              {['Resume Builder', 'ATS Checker', 'Cover Letter', 'Templates', 'Pricing'].map(item => (
-                <Link key={item} to="/register" className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">{item}</Link>
+              {PRODUCT_LINKS.map(({ to, label }) => (
+                <Link key={label} to={to}
+                  className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">
+                  {label}
+                </Link>
               ))}
             </div>
           </div>
@@ -41,9 +76,16 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Resources</h4>
             <div className="space-y-2.5">
-              {['Resume Tips', 'ATS Guide', 'Interview Prep', 'Career Blog', 'FAQ'].map(item => (
-                <a key={item} href="#" className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">{item}</a>
+              {RESOURCE_LINKS.map(({ to, label }) => (
+                <Link key={label} to={to}
+                  className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">
+                  {label}
+                </Link>
               ))}
+              <a href="mailto:support@resumeaipro.in"
+                className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">
+                Support
+              </a>
             </div>
           </div>
 
@@ -51,8 +93,11 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Company</h4>
             <div className="space-y-2.5">
-              {['About Us', 'Privacy Policy', 'Terms of Service', 'Refund Policy', 'Contact'].map(item => (
-                <a key={item} href="#" className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">{item}</a>
+              {LEGAL_LINKS.map(({ to, label }) => (
+                <Link key={label} to={to}
+                  className="block text-slate-500 hover:text-slate-300 text-sm transition-colors">
+                  {label}
+                </Link>
               ))}
             </div>
           </div>
@@ -60,11 +105,18 @@ export default function Footer() {
 
         <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-600 text-xs">
-            © 2026 Resumics. All rights reserved. Made with <Heart size={10} className="inline text-red-400" /> in India.
+            © {new Date().getFullYear()} ResumeAI Pro by{' '}
+            <a href="https://www.linkedin.com/in/ahaitsham" target="_blank" rel="noopener noreferrer"
+              className="text-slate-500 hover:text-slate-300 transition-colors">
+              Ahaitsham Khan
+            </a>
+            . Made with <Heart size={10} className="inline text-red-400" /> in Greater Noida, India.
           </p>
           <div className="flex items-center gap-1 text-slate-600 text-xs">
             <Mail size={10} />
-            <span>resumics@gmail.com</span>
+            <a href="mailto:support@resumeaipro.in" className="hover:text-slate-400 transition-colors">
+              support@resumeaipro.in
+            </a>
           </div>
         </div>
       </div>

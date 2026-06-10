@@ -7,15 +7,21 @@ import UrgencyPopup from './components/ui/UrgencyPopup'
 import ExitIntentPopup from './components/ui/ExitIntentPopup'
 import LoadingScreen from './components/ui/LoadingScreen'
 
-const LandingPage = lazy(() => import('./pages/LandingPage'))
-const LoginPage = lazy(() => import('./pages/LoginPage'))
-const RegisterPage = lazy(() => import('./pages/RegisterPage'))
-const DashboardPage = lazy(() => import('./pages/DashboardPage'))
-const BuilderPage = lazy(() => import('./pages/BuilderPage'))
-const PreviewPage = lazy(() => import('./pages/PreviewPage'))
-const ToolsPage = lazy(() => import('./pages/ToolsPage'))
-const AdminPage = lazy(() => import('./pages/AdminPage'))
+const LandingPage       = lazy(() => import('./pages/LandingPage'))
+const LoginPage         = lazy(() => import('./pages/LoginPage'))
+const RegisterPage      = lazy(() => import('./pages/RegisterPage'))
+const DashboardPage     = lazy(() => import('./pages/DashboardPage'))
+const BuilderPage       = lazy(() => import('./pages/BuilderPage'))
+const PreviewPage       = lazy(() => import('./pages/PreviewPage'))
+const ToolsPage         = lazy(() => import('./pages/ToolsPage'))
+const AdminPage         = lazy(() => import('./pages/AdminPage'))
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
+const AboutPage           = lazy(() => import('./pages/AboutPage'))
+const ATSGuidePage        = lazy(() => import('./pages/ATSGuidePage'))
+const PrivacyPage         = lazy(() => import('./pages/PrivacyPage'))
+const TermsPage           = lazy(() => import('./pages/TermsPage'))
+const RefundPage          = lazy(() => import('./pages/RefundPage'))
+const ContactPage         = lazy(() => import('./pages/ContactPage'))
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const { isAuthenticated, user } = useAuthStore()
@@ -54,8 +60,6 @@ export default function App() {
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
- 
-
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <BrowserRouter>
@@ -70,7 +74,7 @@ export default function App() {
               borderRadius: '12px',
             },
             success: { iconTheme: { primary: '#22C55E', secondary: '#fff' } },
-            error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } },
+            error:   { iconTheme: { primary: '#EF4444', secondary: '#fff' } },
           }}
         />
 
@@ -79,20 +83,27 @@ export default function App() {
 
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-            <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+            <Route path="/"               element={<LandingPage />} />
+            <Route path="/login"          element={<PublicRoute><LoginPage /></PublicRoute>} />
+            <Route path="/register"       element={<PublicRoute><RegisterPage /></PublicRoute>} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-            <Route path="/builder" element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
-            <Route path="/builder/:id" element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
-            <Route path="/preview/:id" element={<ProtectedRoute><PreviewPage /></ProtectedRoute>} />
-            <Route path="/tools" element={<ProtectedRoute><ToolsPage /></ProtectedRoute>} />
+            <Route path="/dashboard"      element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/builder"        element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
+            <Route path="/builder/:id"    element={<ProtectedRoute><BuilderPage /></ProtectedRoute>} />
+            <Route path="/preview/:id"    element={<ProtectedRoute><PreviewPage /></ProtectedRoute>} />
+            <Route path="/tools"          element={<ProtectedRoute><ToolsPage /></ProtectedRoute>} />
 
-            <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>} />
+            <Route path="/admin"          element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>} />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/about"          element={<AboutPage />} />
+            <Route path="/ats-guide"       element={<ATSGuidePage />} />
+            <Route path="/privacy"         element={<PrivacyPage />} />
+            <Route path="/terms"           element={<TermsPage />} />
+            <Route path="/refund"          element={<RefundPage />} />
+            <Route path="/contact"         element={<ContactPage />} />
+
+            <Route path="*"              element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
