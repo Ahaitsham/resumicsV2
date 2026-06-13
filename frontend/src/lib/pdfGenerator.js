@@ -1,29 +1,47 @@
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
-const A4_WIDTH_PX   = 794   // 210mm at 96dpi
-const A4_HEIGHT_PX  = 1123  // 297mm at 96dpi
+const A4_WIDTH_PX  = 794   // 210mm @ 96dpi
+const A4_HEIGHT_PX = 1123  // 297mm @ 96dpi
 
-// How much overflow is acceptable to shrink into one page instead of adding a new page.
-// 0.15 = if content is up to 15% taller than one A4 page, shrink to fit.
-// Beyond that, use multiple pages.
-const SHRINK_THRESHOLD = 0.15
+// If content overflows by more than this ratio, add a 2nd page instead of shrinking
+// 0.8 = allow up to 80% of a second page before going multi-page
+// This is generous — almost always better to shrink than split
+const MULTIPAGE_THRESHOLD = 0.80
 
-/**
- * Capture the resume element at A4 width regardless of screen size.
- * Returns the raw canvas.
- */
-async function captureResume(element) {
-  // Save original styles
-  const saved = {
+async function captureElement(element, scale = 2) {
+  return html2canvas(element, {
+    scale,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    width: A4_WIDTH_PX,
+    windowWidth: A4_WIDTH_PX,
+  })
+}
+
+function saveStyles(element) {
+  return {
     width:     element.style.width,
     maxWidth:  element.style.maxWidth,
     minHeight: element.style.minHeight,
     transform: element.style.transform,
-    position:  element.style.position,
+    fontSize:  element.style.fontSize,
   }
+}
 
-  // Force A4 width for capture
+function restoreStyles(element, saved) {
+  Object.assign(element.style, saved)
+}
+
+export async function generatePDF(elementId, filename = 'resume.pdf') {
+  const element = document.getElementById(elementId)
+  if (!element) throw new Error('Resume element not found')
+
+  const saved = saveStyles(element)
+
+  // Step 1 — measure natural content height at A4 width
   Object.assign(element.style, {
     width:     `${A4_WIDTH_PX}px`,
     maxWidth:  `${A4_WIDTH_PX}px`,
@@ -31,193 +49,196 @@ async function captureResume(element) {
     transform: 'none',
   })
 
-  let canvas
-  try {
-    canvas = await html2canvas(element, {
-      scale:       2,           // 2x for crisp text on retina/print
-      useCORS:     true,
-      allowTaint:  true,
-      backgroundColor: '#ffffff',
-      logging:     false,
-      width:       A4_WIDTH_PX,
-      windowWidth: A4_WIDTH_PX,
-    })
-  } finally {
-    // Always restore — even if canvas fails
-    Object.assign(element.style, saved)
-  }
+  // Force layout recalc
+  element.offsetHeight // eslint-disable-line
 
-  return canvas
-}
-
-/**
- * Smart PDF generator:
- *
- * 1. Captures resume at A4 width
- * 2. Checks how much content overflows A4 height
- * 3. If overflow ≤ SHRINK_THRESHOLD (15%) → scale entire content down to fit 1 page
- * 4. If overflow > SHRINK_THRESHOLD → split into proper multi-page PDF
- *    with clean page breaks (never cuts mid-line)
- */
-export async function generatePDF(elementId, filename = 'resume.pdf') {
-  const element = document.getElementById(elementId)
-  if (!element) throw new Error('Resume preview element not found')
-
-  const canvas = await captureResume(element)
+  const naturalH = element.scrollHeight  // actual rendered height in px
+  const overflowPx = naturalH - A4_HEIGHT_PX
+  const overflowRatio = overflowPx / A4_HEIGHT_PX
 
   const pdf = new jsPDF({
     orientation: 'portrait',
-    unit:        'mm',
-    format:      'a4',
-    compress:    true,
+    unit: 'mm',
+    format: 'a4',
+    compress: true,
   })
+  const pdfW = pdf.internal.pageSize.getWidth()   // 210
+  const pdfH = pdf.internal.pageSize.getHeight()  // 297
 
-  const pdfW = pdf.internal.pageSize.getWidth()   // 210mm
-  const pdfH = pdf.internal.pageSize.getHeight()  // 297mm
-
-  // canvas dimensions at scale:2 → actual content pixels = canvas / 2
-  // but we work with raw canvas px throughout, ratio handles conversion to mm
-  const imgW = canvas.width
-  const imgH = canvas.height
-
-  const ratio       = pdfW / imgW        // mm per canvas-pixel
-  const contentH_MM = imgH * ratio       // total content height in mm
-
-  const overflowRatio = (contentH_MM - pdfH) / pdfH
-
-  // ── Case 1: fits on one page ──────────────────────────────────
-  if (contentH_MM <= pdfH) {
-    pdf.addImage(
-      canvas.toDataURL('image/png', 0.95),
-      'PNG', 0, 0, pdfW, contentH_MM
-    )
+  // ── Fits perfectly on one page ────────────────────────────────
+  if (naturalH <= A4_HEIGHT_PX) {
+    let canvas
+    try {
+      canvas = await captureElement(element)
+    } finally {
+      restoreStyles(element, saved)
+    }
+    const ratio = pdfW / canvas.width
+    pdf.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, pdfW, canvas.height * ratio)
     pdf.save(filename)
     return true
   }
 
-  // ── Case 2: small overflow → shrink to fit one page ───────────
-  if (overflowRatio <= SHRINK_THRESHOLD) {
-    // Scale both dimensions uniformly so content fits in pdfH
-    const scaleFactor = pdfH / contentH_MM
-    const scaledW     = pdfW * scaleFactor   // slightly less than 210mm
-    const offsetX     = (pdfW - scaledW) / 2 // center horizontally
+  // ── Overflows but less than MULTIPAGE_THRESHOLD → shrink font to fit ──
+  if (overflowRatio <= MULTIPAGE_THRESHOLD) {
+    // Calculate the font scale needed to fit everything in A4
+    const scaleFactor = A4_HEIGHT_PX / naturalH  // e.g. 0.93 for 7% overflow
 
-    pdf.addImage(
-      canvas.toDataURL('image/png', 0.95),
-      'PNG', offsetX, 0, scaledW, pdfH
-    )
+    // Apply CSS transform scale to the inner content
+    // This actually shrinks all text, spacing, and elements proportionally
+    element.style.transform       = `scale(${scaleFactor})`
+    element.style.transformOrigin = 'top left'
+    element.style.width           = `${A4_WIDTH_PX}px`
+    element.style.maxWidth        = `${A4_WIDTH_PX}px`
+    // Compensate width for the scale so it still captures at A4 width
+    element.style.width           = `${Math.round(A4_WIDTH_PX / scaleFactor)}px`
+
+    element.offsetHeight // force layout
+
+    let canvas
+    try {
+      // Capture at reduced scale — the transform shrinks content
+      canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: Math.round(A4_WIDTH_PX / scaleFactor),
+        windowWidth: Math.round(A4_WIDTH_PX / scaleFactor),
+      })
+    } finally {
+      restoreStyles(element, saved)
+    }
+
+    // The canvas is now wider than A4 but scaled — fit it to A4 width & height
+    pdf.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, pdfW, pdfH)
     pdf.save(filename)
     return true
   }
 
-  // ── Case 3: large overflow → multi-page with smart breaks ─────
-  // Page height in canvas pixels
-  const pageH_px = Math.round(pdfH / ratio)
-
-  // We'll look for a safe cut point near each page boundary.
-  // "Safe" means: don't cut inside a text run — scan a small window
-  // around the ideal cut point and find the nearest row of white pixels.
-  const ctx         = canvas.getContext('2d')
-  const scanWindow  = Math.round(pageH_px * 0.05) // scan ±5% of page height
-  const imgData     = ctx.getImageData(0, 0, imgW, imgH)
-
-  function rowIsWhite(y) {
-    if (y < 0 || y >= imgH) return true
-    for (let x = 0; x < imgW; x += 4) { // sample every 4th pixel for speed
-      const i = (y * imgW + x) * 4
-      const r = imgData.data[i], g = imgData.data[i+1], b = imgData.data[i+2]
-      if (r < 245 || g < 245 || b < 245) return false
-    }
-    return true
+  // ── Large overflow → multi-page using canvas slicing ─────────
+  // Restore to A4 width for full capture
+  let canvas
+  try {
+    canvas = await captureElement(element)
+  } finally {
+    restoreStyles(element, saved)
   }
 
-  function findBestCut(idealY) {
-    // Scan above the ideal cut first (prefer breaking before content)
-    for (let delta = 0; delta <= scanWindow; delta++) {
-      if (rowIsWhite(idealY - delta)) return idealY - delta
-      if (rowIsWhite(idealY + delta)) return idealY + delta
-    }
-    return idealY // fallback to ideal if no white row found
-  }
+  const ratio      = pdfW / canvas.width
+  const pageH_px   = Math.round(pdfH / ratio)  // page height in canvas pixels
 
-  // Build page slices
-  const slices = []
-  let y = 0
-  while (y < imgH) {
-    const remaining = imgH - y
-    if (remaining <= pageH_px * (1 + SHRINK_THRESHOLD)) {
-      // Last slice — fits on one page (possibly shrunk a tiny bit)
-      slices.push({ y, h: remaining })
+  let yOffset = 0
+  let pageNum = 0
+
+  while (yOffset < canvas.height) {
+    const remaining = canvas.height - yOffset
+
+    // Last slice: if it's small enough, shrink it onto one page
+    const isLastSlice = remaining <= pageH_px * (1 + MULTIPAGE_THRESHOLD)
+
+    if (isLastSlice && remaining > pageH_px) {
+      // Shrink last slice to fit
+      const sliceCanvas       = document.createElement('canvas')
+      sliceCanvas.width       = canvas.width
+      sliceCanvas.height      = remaining
+      const ctx               = sliceCanvas.getContext('2d')
+      ctx.fillStyle           = '#ffffff'
+      ctx.fillRect(0, 0, canvas.width, remaining)
+      ctx.drawImage(canvas, 0, yOffset, canvas.width, remaining, 0, 0, canvas.width, remaining)
+
+      const sliceH_MM = remaining * ratio
+      const sf        = pdfH / sliceH_MM
+      const scaledW   = pdfW * sf
+      const offsetX   = (pdfW - scaledW) / 2
+
+      if (pageNum > 0) pdf.addPage()
+      pdf.addImage(sliceCanvas.toDataURL('image/png', 1.0), 'PNG', offsetX, 0, scaledW, pdfH)
       break
     }
-    const idealCut = y + pageH_px
-    const actualCut = findBestCut(idealCut)
-    slices.push({ y, h: actualCut - y })
-    y = actualCut
-  }
 
-  // Render each slice onto its own PDF page
-  slices.forEach(({ y: sliceY, h: sliceH }, i) => {
-    const sliceCanvas       = document.createElement('canvas')
-    sliceCanvas.width       = imgW
-    sliceCanvas.height      = sliceH
-    const sliceCtx          = sliceCanvas.getContext('2d')
-    sliceCtx.fillStyle      = '#ffffff'
-    sliceCtx.fillRect(0, 0, imgW, sliceH)
-    sliceCtx.drawImage(canvas, 0, sliceY, imgW, sliceH, 0, 0, imgW, sliceH)
+    // Normal slice — find a clean break point
+    let sliceH = Math.min(pageH_px, remaining)
 
-    const sliceH_MM = sliceH * ratio
+    if (remaining > pageH_px) {
+      // Scan upward from the ideal cut point to find a white row
+      const ctx      = canvas.getContext('2d')
+      const scanRange = Math.round(pageH_px * 0.08) // scan 8% upward
+      const idealCut  = yOffset + pageH_px
+      let bestCut     = idealCut
 
-    // Shrink last page if it's just a small overflow
-    const lastSliceOverflow = (sliceH_MM - pdfH) / pdfH
-    let renderH   = sliceH_MM
-    let renderW   = pdfW
-    let offsetX   = 0
-    if (sliceH_MM > pdfH && lastSliceOverflow <= SHRINK_THRESHOLD) {
-      const sf  = pdfH / sliceH_MM
-      renderW   = pdfW * sf
-      renderH   = pdfH
-      offsetX   = (pdfW - renderW) / 2
+      for (let dy = 0; dy <= scanRange; dy++) {
+        const testY = idealCut - dy
+        if (testY <= yOffset) break
+        const rowData = ctx.getImageData(0, testY, canvas.width, 1).data
+        let isWhite   = true
+        for (let i = 0; i < rowData.length; i += 16) { // sample every 4th pixel
+          if (rowData[i] < 240 || rowData[i+1] < 240 || rowData[i+2] < 240) {
+            isWhite = false
+            break
+          }
+        }
+        if (isWhite) { bestCut = testY; break }
+      }
+
+      sliceH = bestCut - yOffset
     }
 
-    if (i > 0) pdf.addPage()
+    const sliceCanvas       = document.createElement('canvas')
+    sliceCanvas.width       = canvas.width
+    sliceCanvas.height      = sliceH
+    const ctx               = sliceCanvas.getContext('2d')
+    ctx.fillStyle           = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, sliceH)
+    ctx.drawImage(canvas, 0, yOffset, canvas.width, sliceH, 0, 0, canvas.width, sliceH)
+
+    if (pageNum > 0) pdf.addPage()
     pdf.addImage(
-      sliceCanvas.toDataURL('image/png', 0.95),
-      'PNG', offsetX, 0, renderW, renderH
+      sliceCanvas.toDataURL('image/png', 1.0),
+      'PNG', 0, 0, pdfW, sliceH * ratio
     )
-  })
+
+    yOffset += sliceH
+    pageNum++
+  }
 
   pdf.save(filename)
   return true
 }
 
-/**
- * Same logic but returns a Blob instead of saving.
- * Used for server-side upload or preview.
- */
 export async function generatePDFBlob(elementId) {
   const element = document.getElementById(elementId)
-  if (!element) throw new Error('Resume preview element not found')
+  if (!element) throw new Error('Resume element not found')
 
-  const canvas = await captureResume(element)
+  const saved = saveStyles(element)
+  Object.assign(element.style, {
+    width: `${A4_WIDTH_PX}px`, maxWidth: `${A4_WIDTH_PX}px`,
+    minHeight: 'unset', transform: 'none',
+  })
 
-  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true })
-  const pdfW        = pdf.internal.pageSize.getWidth()
-  const pdfH        = pdf.internal.pageSize.getHeight()
-  const ratio       = pdfW / canvas.width
-  const contentH_MM = canvas.height * ratio
-  const overflowRatio = (contentH_MM - pdfH) / pdfH
+  const naturalH = element.scrollHeight
+  const overflowRatio = (naturalH - A4_HEIGHT_PX) / A4_HEIGHT_PX
 
-  if (contentH_MM <= pdfH) {
-    pdf.addImage(canvas.toDataURL('image/png', 0.95), 'PNG', 0, 0, pdfW, contentH_MM)
-  } else if (overflowRatio <= SHRINK_THRESHOLD) {
-    const sf      = pdfH / contentH_MM
-    const scaledW = pdfW * sf
-    pdf.addImage(canvas.toDataURL('image/png', 0.95), 'PNG', (pdfW - scaledW) / 2, 0, scaledW, pdfH)
+  let canvas
+  if (overflowRatio > 0 && overflowRatio <= MULTIPAGE_THRESHOLD) {
+    const sf = A4_HEIGHT_PX / naturalH
+    element.style.transform       = `scale(${sf})`
+    element.style.transformOrigin = 'top left'
+    element.style.width           = `${Math.round(A4_WIDTH_PX / sf)}px`
+    element.offsetHeight
+    try { canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false, width: Math.round(A4_WIDTH_PX / sf), windowWidth: Math.round(A4_WIDTH_PX / sf) }) }
+    finally { restoreStyles(element, saved) }
   } else {
-    // multi-page blob — just render all on one tall page for blob use case
-    pdf.addImage(canvas.toDataURL('image/png', 0.95), 'PNG', 0, 0, pdfW, contentH_MM)
+    try { canvas = await captureElement(element) }
+    finally { restoreStyles(element, saved) }
   }
 
+  const pdf  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true })
+  const pdfW = pdf.internal.pageSize.getWidth()
+  const pdfH = pdf.internal.pageSize.getHeight()
+  const ratio = pdfW / canvas.width
+  const h     = Math.min(canvas.height * ratio, pdfH)
+  pdf.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, pdfW, h)
   return pdf.output('blob')
 }
