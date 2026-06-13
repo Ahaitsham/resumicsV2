@@ -9,7 +9,7 @@ import Navbar from '../components/layout/Navbar'
 import { ResumeTemplate } from '../components/resume/ResumeTemplates'
 import { useResumeStore, useAuthStore } from '../store'
 import { paymentAPI, resumeAPI } from '../lib/api'
-import { generatePDF } from '../lib/pdfGenerator'
+import { generatePDF } from '../lib/pdfGenerator.jsx'
 import toast from 'react-hot-toast'
 
 // Load the Razorpay checkout.js script once and cache the promise
