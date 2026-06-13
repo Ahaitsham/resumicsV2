@@ -32,13 +32,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <img src="/favicon.ico" alt="ResumeAI Pro"
+              <img src="/favicon.ico" alt="Resumics"
                 className="w-7 h-7 rounded-lg object-cover"
                 onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
               <div className="w-7 h-7 rounded-lg bg-brand-600 items-center justify-content-center hidden">
                 <span className="font-display font-bold text-white text-xs">R</span>
               </div>
-              <span className="font-display font-bold text-white">ResumeAI Pro</span>
+              <span className="font-display font-bold text-white">Resumics</span>
             </div>
             <p className="text-slate-500 text-sm leading-relaxed mb-4">
               India's AI-powered resume builder. Beat ATS, get shortlisted, land your dream job.
@@ -105,7 +105,7 @@ export default function Footer() {
 
         <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-600 text-xs">
-            © {new Date().getFullYear()} ResumeAI Pro by{' '}
+            © {new Date().getFullYear()} Resumics by{' '}
             <a href="https://www.linkedin.com/in/ahaitsham" target="_blank" rel="noopener noreferrer"
               className="text-slate-500 hover:text-slate-300 transition-colors">
               Ahaitsham Khan

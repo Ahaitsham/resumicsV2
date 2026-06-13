@@ -84,7 +84,7 @@ export default function PreviewPage() {
         key: keyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount,          // in paise
         currency,        // INR
-        name: 'ResumeAI Pro',
+        name: 'Resumics',
         description: 'ATS-Optimized Resume — ₹49',
         image: '/favicon.svg',
         order_id: orderId,

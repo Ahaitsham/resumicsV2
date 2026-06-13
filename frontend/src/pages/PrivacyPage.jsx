@@ -18,7 +18,7 @@ We also collect basic usage data (pages visited, features used) to improve the p
   {
     title: '2. How We Use Your Information',
     content: `We use your information to:
-• Provide and improve the ResumeAI Pro service
+• Provide and improve the Resumics service
 • Generate AI-powered resume content using your input
 • Process payments via Razorpay
 • Send transactional emails (password reset, payment confirmation)

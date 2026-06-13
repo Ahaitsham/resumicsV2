@@ -20,7 +20,7 @@ const TIMELINE = [
   },
   {
     year: '2024',
-    title: 'Built Resumics (ResumeAI Pro)',
+    title: 'Built Resumics (Resumics)',
     desc: 'Noticed how many talented people in India were getting rejected by ATS before a human ever saw their resume. Built the fix.',
     icon: Rocket,
   },
@@ -57,7 +57,7 @@ export default function AboutPage() {
             className="font-display text-5xl sm:text-6xl font-bold text-white mb-6 leading-tight"
           >
             The Story Behind<br />
-            <span className="gradient-text">ResumeAI Pro</span>
+            <span className="gradient-text">Resumics</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -88,7 +88,7 @@ export default function AboutPage() {
                   <div className="absolute inset-0 rounded-full bg-brand-500/20 blur-xl scale-110" />
                   <img
                     src="https://res.cloudinary.com/dglmkbwr3/image/upload/v1781062979/4510b943-496c-41a2-9273-4f2260043979_2_luqswp.jpg"
-                    alt="Ahaitsham Khan — Founder, ResumeAI Pro"
+                    alt="Ahaitsham Khan — Founder, Resumics"
                     className="relative w-44 h-44 rounded-2xl object-cover border-2 border-brand-500/40 shadow-2xl shadow-brand-500/20"
                     loading="lazy"
                   />
@@ -144,7 +144,7 @@ export default function AboutPage() {
                 </p>
 
                 <p className="text-slate-300 text-sm leading-relaxed mb-6">
-                  So I built ResumeAI Pro. A tool that levels the playing field — where a
+                  So I built Resumics. A tool that levels the playing field — where a
                   fresher from Greater Noida has the same shot as someone from a tier-1 city
                   or a big college. Your skills should speak for you. This tool makes sure
                   they get the chance to.

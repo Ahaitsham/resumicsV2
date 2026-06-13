@@ -7,11 +7,11 @@ import Footer from '../components/layout/Footer'
 const SECTIONS = [
   {
     title: '1. Acceptance of Terms',
-    content: 'By accessing or using ResumeAI Pro ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.',
+    content: 'By accessing or using Resumics ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.',
   },
   {
     title: '2. Description of Service',
-    content: 'ResumeAI Pro is an AI-powered resume builder that helps users create ATS-optimised resumes. The Service includes resume generation, ATS scoring, job description matching, and PDF download. Preview is free; PDF download requires a one-time payment of ₹49 per resume.',
+    content: 'Resumics is an AI-powered resume builder that helps users create ATS-optimised resumes. The Service includes resume generation, ATS scoring, job description matching, and PDF download. Preview is free; PDF download requires a one-time payment of ₹49 per resume.',
   },
   {
     title: '3. Account Registration',
@@ -34,7 +34,7 @@ For refund requests, email resumics@gmail.com within 48 hours of purchase.`,
     title: '5. Intellectual Property',
     content: `You retain ownership of the content you input into the Service (your personal information, work history, etc.). 
 
-ResumeAI Pro owns the software, AI models, design, and branding. You are granted a non-exclusive licence to use the Service for personal, non-commercial resume building purposes.
+Resumics owns the software, AI models, design, and branding. You are granted a non-exclusive licence to use the Service for personal, non-commercial resume building purposes.
 
 You may not copy, reverse-engineer, resell, or redistribute the Service or its components.`,
   },
@@ -57,7 +57,7 @@ You may not copy, reverse-engineer, resell, or redistribute the Service or its c
   },
   {
     title: '9. Limitation of Liability',
-    content: 'To the maximum extent permitted by law, ResumeAI Pro shall not be liable for any indirect, incidental, or consequential damages arising from use of the Service. Our total liability shall not exceed the amount you paid in the 30 days preceding any claim.',
+    content: 'To the maximum extent permitted by law, Resumics shall not be liable for any indirect, incidental, or consequential damages arising from use of the Service. Our total liability shall not exceed the amount you paid in the 30 days preceding any claim.',
   },
   {
     title: '10. Governing Law',
@@ -82,7 +82,7 @@ export default function TermsPage() {
             <span className="text-xs text-slate-400">Last updated: January 2025</span>
           </motion.div>
           <h1 className="font-display text-4xl font-bold text-white mb-4">Terms of Service</h1>
-          <p className="text-slate-400">Please read these terms carefully before using ResumeAI Pro.</p>
+          <p className="text-slate-400">Please read these terms carefully before using Resumics.</p>
         </div>
       </section>
       <section className="py-8 px-4 pb-20">
