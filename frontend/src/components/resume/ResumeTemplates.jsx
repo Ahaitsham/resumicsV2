@@ -6,7 +6,7 @@ export function ModernTemplate({ data, watermark = false }) {
   const { personalInfo = {}, careerObjective = '', education = [], experience = [], projects = [], skills = {}, certifications = [], achievements = [], languages = [] } = data || {}
 
   return (
-    <div id="resume-preview" className={`bg-white text-gray-900 font-sans max-w-[794px] mx-auto ${watermark ? 'resume-watermark' : ''}`}
+    <div id="resume-preview" className={`bg-white text-gray-900 font-sans w-full ${watermark ? 'resume-watermark' : ''}`}
       style={{ fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.5', padding: '40px', minHeight: '1123px' }}>
 
       {/* Header */}
@@ -200,7 +200,7 @@ export function FresherTemplate({ data, watermark = false }) {
   const { personalInfo = {}, careerObjective = '', education = [], projects = [], skills = {}, certifications = [], achievements = [], languages = [] } = data || {}
 
   return (
-    <div id="resume-preview" className={`bg-white text-gray-900 max-w-[794px] mx-auto ${watermark ? 'resume-watermark' : ''}`}
+    <div id="resume-preview" className={`bg-white text-gray-900 w-full ${watermark ? 'resume-watermark' : ''}`}
       style={{ fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.5', minHeight: '1123px' }}>
 
       {/* Colored top bar */}

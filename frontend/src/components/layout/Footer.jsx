@@ -44,7 +44,7 @@ export default function Footer() {
               India's AI-powered resume builder. Beat ATS, get shortlisted, land your dream job.
             </p>
             <div className="flex gap-3">
-              <a href="https://www.linkedin.com/in/ahaitsham" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.linkedin.com/in/ahaitsham-15b225255/" target="_blank" rel="noopener noreferrer"
                 className="p-2 glass rounded-lg text-slate-400 hover:text-white hover:border-brand-500/30 transition-all">
                 <Linkedin size={14} />
               </a>
