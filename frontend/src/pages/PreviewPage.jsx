@@ -37,12 +37,12 @@ export default function PreviewPage() {
   const { getResumeData, selectedTemplate, atsScore, isPaid, setPaymentStatus } = useResumeStore()
   const { user } = useAuthStore()
 
-  const [loading, setLoading] = useState(false)
-  const [showPayModal, setShowPayModal] = useState(false)
-  const [payLoading, setPayLoading] = useState(false)
-  const [resumeData, setResumeData] = useState(null)
+  const [loading, setLoading]               = useState(false)
+  const [showPayModal, setShowPayModal]     = useState(false)
+  const [payLoading, setPayLoading]         = useState(false)
+  const [resumeData, setResumeData]         = useState(null)
   const [downloadLoading, setDownloadLoading] = useState(false)
-  const [payError, setPayError] = useState('')
+  const [payError, setPayError]             = useState('')
 
   // ── Load resume from backend (or use local store data) ────────
   useEffect(() => {
@@ -79,16 +79,12 @@ export default function PreviewPage() {
 
       if (!orderId) throw new Error('Failed to create order. Please try again.')
 
-      console.log("Razorpay Key:", keyId)
-      console.log("Order ID:", orderId)
-      console.log("Currency:", currency)
-
       // Step 3 — open Razorpay modal
       const options = {
         key: keyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount,          // in paise
         currency,        // INR
-        name: 'Resumics',
+        name: 'ResumeAI Pro',
         description: 'ATS-Optimized Resume — ₹49',
         image: '/favicon.svg',
         order_id: orderId,
@@ -100,14 +96,28 @@ export default function PreviewPage() {
         notes: { resumeId: id },
         theme: { color: '#4F46E5' },
 
+        // Show international cards block explicitly
+        config: {
+          display: {
+            blocks: {
+              international: {
+                name: 'Pay with International Card',
+                instruments: [{ method: 'card' }],
+              },
+            },
+            sequence: ['block.international'],
+            preferences: { show_default_blocks: true },
+          },
+        },
+
         // ✅ Payment success handler
         handler: async (response) => {
           try {
             // Verify signature on backend before unlocking
             await paymentAPI.verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
+              razorpay_order_id:   response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
+              razorpay_signature:  response.razorpay_signature,
               resumeId: id,
             })
 
@@ -117,7 +127,7 @@ export default function PreviewPage() {
             // Auto-download after 1 second
             setTimeout(() => handleDownload(true), 1200)
           } catch (verifyErr) {
-            const msg = verifyErr.response?.data?.error || 'Payment verification failed. Contact resumics@gmail.com'
+            const msg = verifyErr.response?.data?.error || 'Payment verification failed. Contact support@resumeaipro.in'
             setPayError(msg)
             toast.error(msg)
           }
@@ -137,23 +147,11 @@ export default function PreviewPage() {
 
       const rzp = new window.Razorpay(options)
 
-
-      rzp.on('payment.failed', (response) => {
-  console.log("RAZORPAY ERROR", response)
-
-  const reason = response.error?.description
-  const source = response.error?.source
-  const step = response.error?.step
-  const code = response.error?.code
-
-  console.log({ reason, source, step, code })
-})
-
       // ✅ payment.failed event
       rzp.on('payment.failed', (response) => {
         const reason = response.error?.description || response.error?.reason || 'Payment failed'
-        const code = response.error?.code || ''
-        const msg = `Payment failed: ${reason}${code ? ` (${code})` : ''}. Please try again.`
+        const code   = response.error?.code || ''
+        const msg    = `Payment failed: ${reason}${code ? ` (${code})` : ''}. Please try again.`
         setPayError(msg)
         toast.error(msg)
         setPayLoading(false)
@@ -177,7 +175,8 @@ export default function PreviewPage() {
     setDownloadLoading(true)
     try {
       const name = resumeData?.personalInfo?.fullName?.replace(/\s+/g, '_') || 'Resume'
-      await generatePDF('resume-preview', `${name}_Resumics.pdf`)
+      // Pass resumeData for vector PDF generation (real text, not image)
+      await generatePDF('resume-preview', `${name}_ResumeAIPro.pdf`, resumeData)
       toast.success('Resume downloaded! ✅')
     } catch (err) {
       toast.error('PDF generation failed. Please try again.')
@@ -191,8 +190,8 @@ export default function PreviewPage() {
   const isLocal = !id || id === 'local' || id === 'new'
 
   const scoreColor = atsScore >= 80 ? 'text-green-400 border-green-500/30 bg-green-500/10'
-    : atsScore >= 60 ? 'text-amber-400 border-amber-500/30 bg-amber-500/10'
-      : 'text-red-400 border-red-500/30 bg-red-500/10'
+                   : atsScore >= 60 ? 'text-amber-400 border-amber-500/30 bg-amber-500/10'
+                   : 'text-red-400 border-red-500/30 bg-red-500/10'
 
   return (
     <div className="min-h-screen bg-slate-950">
@@ -373,8 +372,8 @@ export default function PreviewPage() {
                   {atsScore >= 80
                     ? '🎉 Excellent! Highly optimized for ATS systems.'
                     : atsScore >= 60
-                      ? '⚡ Good. Use AI Enhance in the builder to push above 80.'
-                      : '⚠️ Needs work. Go back and fill more sections + use AI Enhance.'}
+                    ? '⚡ Good. Use AI Enhance in the builder to push above 80.'
+                    : '⚠️ Needs work. Go back and fill more sections + use AI Enhance.'}
                 </p>
               </div>
             )}
