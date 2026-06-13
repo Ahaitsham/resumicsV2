@@ -84,7 +84,7 @@ export default function PreviewPage() {
         key: keyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount,          // in paise
         currency,        // INR
-        name: 'Resumics',
+        name: 'ResumeAI Pro',
         description: 'ATS-Optimized Resume — ₹49',
         image: '/favicon.svg',
         order_id: orderId,
@@ -176,7 +176,7 @@ export default function PreviewPage() {
     try {
       const name = resumeData?.personalInfo?.fullName?.replace(/\s+/g, '_') || 'Resume'
       // Pass resumeData for vector PDF generation (real text, not image)
-      await generatePDF('resume-preview', `${name}_ResumeAIPro.pdf`, resumeData)
+      await generatePDF('resume-preview', `${name}_ResumeAIPro.pdf`)
       toast.success('Resume downloaded! ✅')
     } catch (err) {
       toast.error('PDF generation failed. Please try again.')
