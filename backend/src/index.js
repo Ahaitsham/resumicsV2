@@ -6,6 +6,12 @@ import rateLimit from 'express-rate-limit'
 import dotenv from 'dotenv'
 import { PrismaClient } from '@prisma/client'
 
+import authRoutes from './routes/auth.js'
+import resumeRoutes from './routes/resume.js'
+import paymentRoutes from './routes/payment.js'
+import aiRoutes from './routes/ai.js'
+import adminRoutes from './routes/admin.js'
+
 dotenv.config()
 
 // ─────────────────────────────────────────────────────────────
@@ -28,7 +34,10 @@ if (MISSING.length > 0) {
   )
 
   if (process.env.NODE_ENV === 'production') {
-    console.error('❌ Cannot start in production with missing env vars.')
+    console.error(
+      '❌ Cannot start in production with missing env vars.'
+    )
+
     process.exit(1)
   }
 }
@@ -63,7 +72,7 @@ const ALLOWED_ORIGINS = [
   'https://www.resumics.online',
 ]
 
-// Add FRONTEND_URL from Vercel environment variables
+// Add FRONTEND_URL from environment variables
 if (process.env.FRONTEND_URL) {
   process.env.FRONTEND_URL
     .split(',')
@@ -76,12 +85,11 @@ if (process.env.FRONTEND_URL) {
     })
 }
 
-console.log('✅ CORS allowed origins:')
-console.log(ALLOWED_ORIGINS)
+console.log('✅ CORS allowed origins:', ALLOWED_ORIGINS)
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests without an Origin header
+    // Allow requests without Origin header
     // Example: Postman, curl, server-to-server requests
     if (!origin) {
       return callback(null, true)
@@ -120,7 +128,6 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 }
 
-// CORS MUST come before routes
 app.use(cors(corsOptions))
 
 // Explicit preflight handling
@@ -200,12 +207,6 @@ app.use('/api/ai', aiLimit)
 // Routes
 // ─────────────────────────────────────────────────────────────
 
-import authRoutes from './routes/auth.js'
-import resumeRoutes from './routes/resume.js'
-import paymentRoutes from './routes/payment.js'
-import aiRoutes from './routes/ai.js'
-import adminRoutes from './routes/admin.js'
-
 app.use('/api/auth', authRoutes)
 app.use('/api/resume', resumeRoutes)
 app.use('/api/payment', paymentRoutes)
@@ -243,7 +244,6 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   console.error('❌ Error:', err.message)
 
-  // CORS error
   if (err.message?.startsWith('CORS:')) {
     return res.status(403).json({
       error: 'Request blocked by CORS policy',
@@ -260,24 +260,26 @@ app.use((err, req, res, next) => {
 })
 
 // ─────────────────────────────────────────────────────────────
-// Start server
+// Local / Railway server
 // ─────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT || 5000
 
-app.listen(PORT, () => {
-  console.log(
-    `\n🚀 Resumics backend running on http://localhost:${PORT}`
-  )
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(
+      `\n🚀 Resumics backend running on port ${PORT}`
+    )
 
-  console.log(
-    `   Mode: ${process.env.NODE_ENV || 'development'}`
-  )
+    console.log(
+      `   Mode: ${process.env.NODE_ENV || 'development'}`
+    )
 
-  console.log(
-    `   Health: http://localhost:${PORT}/api/health\n`
-  )
-})
+    console.log(
+      `   Health: http://localhost:${PORT}/api/health\n`
+    )
+  })
+}
 
 // ─────────────────────────────────────────────────────────────
 // Graceful shutdown
@@ -298,3 +300,9 @@ process.on('SIGINT', async () => {
 
   process.exit(0)
 })
+
+// ─────────────────────────────────────────────────────────────
+// Vercel export
+// ─────────────────────────────────────────────────────────────
+
+export default app
